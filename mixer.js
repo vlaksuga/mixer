@@ -82,7 +82,6 @@ init()
 
 // INIT
 function init() {
-    console.log('init')
     setAllPlayButtons()
 }
 
@@ -92,7 +91,6 @@ function setAllPlayButtons(){
     insButtons.forEach( player => {
         playButtons[player.id] = new PlayButton(player.id, player, player.dataset.audio, player.dataset.keyname)
     })
-    console.log(playButtons)
 }
 
 // OPEN AUDIO FILE
@@ -129,8 +127,6 @@ draggables.forEach( item => {
     item.addEventListener('mousedown', e => {
         isMouseDown = true
         startPosition = { x: e.clientX - parseInt(item.style.left, 10) , y: e.clientY - parseInt(item.style.top) }
-        console.log(startPosition)
-        console.log(item.style) 
     })
 
     document.addEventListener('mouseup', e => {
@@ -141,10 +137,50 @@ draggables.forEach( item => {
         if(!isMouseDown) {
             return
         }
-        const size = { w: parseInt(item.style.width, 10) , h: parseInt(item.style.height, 10) }
         const vx = e.clientX - startPosition.x
         const vy = e.clientY - startPosition.y
         item.style.top = `${vy}px`
         item.style.left = `${vx}px`
+    })
+})
+
+// GENERATE SEQUENCE
+function* generateBeatSequence() {
+    const seq = document.querySelectorAll('.beat')
+    console.log(seq.length)
+    for(i = 0; i < seq.length; i++) {
+        yield seq[i]
+    }
+}
+
+// AUTO PLAY SEQUENCE
+const BEAT_INTERVAL_TIME = 300
+function playSequence(generator) {
+    const interval = setInterval(()=>{
+        const beat = generator.next()
+        if(beat.done) {
+            console.log('done')
+            clearInterval(interval)
+            return
+        }
+        if(beat.value.classList.contains('active')) {
+            playButtons["player0"].play()
+        }
+    }, BEAT_INTERVAL_TIME)
+}
+
+
+// PLAY SEQUENCE EVENT LISTENER
+document.getElementById('play').addEventListener('click', () => { playSequence(generateBeatSequence()) })
+
+// BEAT ACTIVE TOGGLE
+const ACTIVE = 'active'
+document.querySelectorAll('.beat').forEach( beat => {
+    beat.addEventListener('click', e => {
+        if(e.target.classList.contains(ACTIVE)) {
+            e.target.classList.remove(ACTIVE)
+            return
+        }
+        e.target.classList.add(ACTIVE)
     })
 })
