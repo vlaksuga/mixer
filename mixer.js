@@ -1,30 +1,15 @@
-
-const BUTTON_EFFECT_DURATION = 100
-
-const playButtons = []
-const shortKey = ["q","w","e","r","a","s","d","f"]
-
-let AudioResource = [
-    // initial
-    'assets/realdrums/Kick/RD_K_1.wav',
-    'assets/realdrums/Kick/RD_K_2.wav',
-    'assets/realdrums/Cymbals/Hi Hat/RD_C_HH_1.wav',
-    'assets/realdrums/Cymbals/Crash/RD_C_C_8.wav',
-    'assets/realdrums/Kick/RD_K_1.wav',
-    'assets/realdrums/Kick/RD_K_6.wav',
-    'assets/realdrums/Kick/RD_K_7.wav',
-    'assets/realdrums/Kick/RD_K_8.wav'
-]
-
+const playButtons = {}
 
 // MODULE : PLAY BUTTON
 class PlayButton {
 
+    BUTTON_EFFECT_DURATION = 100
     CLICK_COLOR = 'turquoise'
     DEFAULT_COLOR = 'gray'
     CONTI = true
 
-    constructor(element, audioUrl, key) {
+    constructor(id, element, audioUrl, key) {
+        this.id = id
         this.element = element
         this.source = new Audio(audioUrl)
         this.key = key
@@ -40,7 +25,7 @@ class PlayButton {
 
     setClickStyle() {
         this.element.style.background = this.CLICK_COLOR
-        setTimeout(this.setDefaulStyle.bind(this), BUTTON_EFFECT_DURATION)
+        setTimeout(this.setDefaulStyle.bind(this), this.BUTTON_EFFECT_DURATION)
         return this
     }
 
@@ -62,6 +47,7 @@ class PlayButton {
     }
 
     setKey() {
+        this.element.children[0].innerText = this.key
         document.addEventListener('keydown', e => {
             if(e.key === this.key) {
                 this.play()
@@ -103,34 +89,34 @@ function init() {
 // SET ALL PLAY BUTTONS
 function setAllPlayButtons(){
     const insButtons = document.querySelectorAll('.player')
-    insButtons.forEach((btn, idx) => {
-        playButtons.push(new PlayButton(btn, AudioResource[idx], shortKey[idx]))
+    insButtons.forEach( player => {
+        playButtons[player.id] = new PlayButton(player.id, player, player.dataset.audio, player.dataset.keyname)
     })
+    console.log(playButtons)
 }
 
 // OPEN AUDIO FILE
 const opens = document.querySelectorAll('.openFile')
-opens.forEach( (btn, idx) => {
+opens.forEach((btn, idx) => {
     btn.addEventListener('click', e => {
+        const player = e.target.parentNode.children[0]
         const input = document.createElement('input')
         input.type = 'file'
         input.click()
-        input.addEventListener('change', function(e){ readAudioResorceFile(e, idx) } , false)
+        input.addEventListener('change', function(e) { readAudioResorceFile(e, player) }, false)
     })
 })
 
 // LOAD FILE
-function readAudioResorceFile(e, idx) {
+function readAudioResorceFile(e, player) {
     const file = e.target.files[0]
-    console.log(idx)
     if(!file) { return }
-    // TODO : FILE TYPE VALIDATION HERE
-
+    
     const reader = new FileReader()
-    reader.onload = e => {
+    reader.onload = () => {
         const url = URL.createObjectURL(file)
-        AudioResource[idx] = url
-        playButtons[idx].setSource(AudioResource[idx])
+        player.dataset.audio = url
+        playButtons[player.id].setSource(url)
     }
     reader.readAsBinaryString(file)
 }
