@@ -120,3 +120,31 @@ function readAudioResorceFile(e, player) {
     }
     reader.readAsBinaryString(file)
 }
+
+// ASSET DRAG AND MOVE
+const draggables = document.querySelectorAll('.draggable')
+let isMouseDown = false
+let startPosition = {}
+draggables.forEach( item => {
+    item.addEventListener('mousedown', e => {
+        isMouseDown = true
+        startPosition = { x: e.clientX - parseInt(item.style.left, 10) , y: e.clientY - parseInt(item.style.top) }
+        console.log(startPosition)
+        console.log(item.style) 
+    })
+
+    document.addEventListener('mouseup', e => {
+        isMouseDown = false
+    })
+
+    item.addEventListener('mousemove', e => {
+        if(!isMouseDown) {
+            return
+        }
+        const size = { w: parseInt(item.style.width, 10) , h: parseInt(item.style.height, 10) }
+        const vx = e.clientX - startPosition.x
+        const vy = e.clientY - startPosition.y
+        item.style.top = `${vy}px`
+        item.style.left = `${vx}px`
+    })
+})
