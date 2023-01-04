@@ -1,3 +1,5 @@
+* { margin: 0; padding: 0; box-sizing: border-box; line-height: 1.5em;}
+body {background-color: hsl(218, 23%, 21%)}
 #container {position: absolute; top:0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 16px; align-items: center;}
 #beatMaker { position: absolute; width: 500px; height: 300px; background-color: hsla(180, 1%, 13%, 0.952); display: inherit; flex-direction: inherit; justify-content: inherit; gap: 24px; align-items: inherit; border-radius: 12px; cursor: pointer;}
 .wrap {width: 100%; display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; padding: 20px; }
@@ -5,9 +7,12 @@
 .player { position: relative; width: 100px; height: 100px; background-color: gray; border-radius: 8px; cursor: pointer; color: white; text-transform: uppercase; }
 .shortKey { position: absolute; top: 6px; left: 8px; text-shadow: black 0.05em 0.05em;}
 .openFile { width: 100%; height: 8px; background-color: gray; border-radius: 9999px; cursor: pointer;}
-#channel { position: absolute; width: 820px; height: 50px; background-color: black; display: flex; flex-direction: row; justify-content: space-around; align-items: center;}
-.beat { width: 80px; height: 20px; background-color: gray;}
+.channel { position: absolute; width: 850px; height: 50px; background-color: black; display: flex; flex-direction: row; justify-content: space-around; align-items: center; padding-left: 8px; padding-right: 8px;}
+.channelName { color: white;}
+.beatContainer { width: 80%; display: flex; flex-direction: row; justify-content: space-around;}
+.beat { width: 60px; height: 24px; background-color: gray;}
 .beat.active {background-color: turquoise;}
 .draggable { cursor: pointer; }
-#visualizer { width: 100%; height: 50px; background-color: gray;}
-#play { width: 100px; height: 100px; background-color: red;}
+.channelbpm { width: 40px; height: 24px; background-color: gray; display: flex; justify-content: center; align-items: center; color: white; font-weight: 700;}
+#visualizer { width: 100%; height: 48px; background-color: gray;}
+.playChannel { width: 24px; height: 24px; border-radius: 50%; background-color: red; }

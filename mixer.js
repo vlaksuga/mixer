@@ -78,6 +78,12 @@ class PlayButton {
     }
 }
 
+class Channel {
+    constructor(playButton) {
+        this.playButton = playButton
+    }
+}
+
 init()
 
 // INIT
@@ -145,8 +151,9 @@ draggables.forEach( item => {
 })
 
 // GENERATE SEQUENCE
-function* generateBeatSequence() {
-    const seq = document.querySelectorAll('.beat')
+function* generateBeatChannel(cid) {
+    const channel = document.getElementById(cid)
+    const seq = channel.querySelectorAll('.beat')
     console.log(seq.length)
     for(i = 0; i < seq.length; i++) {
         yield seq[i]
@@ -154,24 +161,32 @@ function* generateBeatSequence() {
 }
 
 // AUTO PLAY SEQUENCE
-const BEAT_INTERVAL_TIME = 300
-function playSequence(generator) {
-    const interval = setInterval(()=>{
+function playSequence(generator, cid) {
+    console.log('play sequence start')
+    const BPM = document.getElementById(cid).dataset.bpm
+    console.log(BPM)
+    
+    const interval = setInterval( () => {
         const beat = generator.next()
         if(beat.done) {
-            console.log('done')
             clearInterval(interval)
+            //document.getElementById('play').click()
             return
         }
         if(beat.value.classList.contains('active')) {
-            playButtons["player0"].play()
+            playButtons["player2"].play()
         }
-    }, BEAT_INTERVAL_TIME)
+    }, getTimeByBPM(BPM))
+}
+
+// PLAY AGAIN
+function playAgain(generator, cid) {
+    playSequence(generator, cid)
 }
 
 
 // PLAY SEQUENCE EVENT LISTENER
-document.getElementById('play').addEventListener('click', () => { playSequence(generateBeatSequence()) })
+document.getElementById('play').addEventListener('click', () => { playSequence(generateBeatChannel("channel1"), "channel1") })
 
 // BEAT ACTIVE TOGGLE
 const ACTIVE = 'active'
@@ -184,3 +199,11 @@ document.querySelectorAll('.beat').forEach( beat => {
         e.target.classList.add(ACTIVE)
     })
 })
+
+// GET TIME BY BPM
+const BEAT_RATE = 4
+function getTimeByBPM(bpm) {
+    const mill = 60000 / bpm
+    console.log(mill)
+    return mill
+}
